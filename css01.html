@@ -1,0 +1,48 @@
+<!DOCTYPE>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<!-- 
+    id选择器(#)【同一页面不能重复】
+    -
+    类选择器(.)【可以重复】
+        - 同一标签属于多个类 用空格隔开
+ -->
+<style type="text/css">
+    body {
+        background-color: antiquewhite;
+    }
+    h2 {
+        color: blueviolet;
+        font-size: 60px;
+        font-weight: bolder;
+        /* 去掉下划线 */
+        text-decoration: none;
+        font-style: italic;
+    }
+    .teshu {
+        color: teal;
+    }
+    .zhongyao{
+        /* 下划线 */
+        text-decoration: underline;
+    }
+    #aaa{
+        color: tomato;
+    }
+</style>
+
+<body>
+    <h2 id="aaa">我是标题</h2>
+    <h2 class="teshu zhongyao">我是标题</h2>
+    <h2 class="zhongyao">我是标题</h2>
+    <h4>wowo</h4>
+    <h4 class="teshu">wowo</h4>
+    <h4>wowo</h4>
+</body>
+
+</html>
