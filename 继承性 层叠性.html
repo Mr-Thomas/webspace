@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<!-- CSS的继承性和层叠性 -->
+<!-- 继承性
+有一些属性，当给自己设置的时候，自己的后代都继承上了，这个就是继承性。
+哪些属性能继承？
+color、 text-开头的、line-开头的、font-开头的。
+继承性是从自己开始，直到最小的元素。
+-->
+<!-- 
+层叠性
+    - 当选择器作用上了某个元素时
+      1、我们需要分别数下id选择器、类选择器、标签选择器的数量 【权重】
+        eg ：0,0,13 < 0,1,0
+      2、权重一样呢？
+        权重一样，谁在后边 以谁为准
+-->
+<style type="text/css">
+    /* 继承性 */
+    body {
+        font-size: 20px;
+        color: violet;
+    }
+
+    /* 1个id选择器 1个类选择器 1个标签选择器 记 1,1,1 */
+    #box1 .hezi2 p {
+        color: red;
+    }
+
+    /* 1个id选择器 0个类选择器 3个标签选择器 记 1,0,3 */
+    div div #box3 p {
+        color: green;
+    }
+
+    /* 0个id选择器 3个类选择器 4个标签选择器 记 0,3,4 */
+    div.hezi1 div.hezi2 div.hezi3 p {
+        color: blueviolet;
+    }
+</style>
+
+<body>
+    <div class="hezi1" id="box1">
+        <div class="hezi2" id="box2">
+            <div class="hezi3" id="box3">
+                <p>猜猜我的颜色？【红色】</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

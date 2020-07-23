@@ -1,0 +1,86 @@
+<!DOCTYPE>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<!-- 
+    1、id选择器(#)【同一页面不能重复】#aaa{}
+    2、类选择器(.)【可以重复】.aaa{}
+        - 同一标签属于多个类 用空格隔开 eg:class="aaa bbb"
+    3、后代选择器 【后代选择器空格隔开】.div1 p{}
+        - 空格就表示后代，.div1 p 就是.div1的后代所有的p【强调：选择的后代不一定是儿子】
+    4、交集选择器 【交集选择器没有空格】div.red{}
+        - 选择的元素是同时满足两个条件
+        - div.red(交集选择器) 和 div .red(后代选择器) 二者不一样
+        - 交集选择器，我们一般都是以标签名开头，比如div.haha,理论可以连续交[一般不建议这么写 h3.aaa.bbb]
+    5、并集选择器(分组选择器)【逗号隔开】 eg：h3,li{color:red;}
+    6、通配符*  *{color：red} [效率低]
+    7、儿子选择器 【div>p{color:red} 只能是儿子不能是孙子】 div的儿子p 和 div的后代p(儿子、孙子...)截然不同
+    8、序选择器 
+        - ul li:first-child{color:red} 选择第一个li
+        - ul li.first{color:red;} ul下所有的li标签和.first类选择交集
+    9、兄弟选择器
+        - +表示选择下一个兄弟【同级标签的下一个】 
+        - .first+li{font-size: 10px;color: red;}
+-->
+
+<!-- CSS的继承性和层叠性 -->
+<!-- 继承性
+有一些属性，当给自己设置的时候，自己的后代都继承上了，这个就是继承性。
+哪些属性能继承？
+color、 text-开头的、line-开头的、font-开头的。
+继承性是从自己开始，直到最小的元素。
+-->
+<!-- 
+层叠性
+    - 我们需要分别数下id、类、标签选择器的数量 【权重】
+-->
+
+<style type="text/css">
+    /* 继承性 */
+    body {
+        font-size: 14px;
+        color: sienna;
+    }
+
+    /* 后代选择器、交集选择器 */
+    ul li.first {
+        font-size: 30px;
+        color: aquamarine;
+    }
+
+    /* 序选择器  */
+    ul li:last-child {
+        text-decoration: underline;
+    }
+
+    /* 兄弟选择器 */
+    .first+li {
+        font-size: 40px;
+        color: red;
+    }
+
+    ul>li {
+        color: violet;
+    }
+</style>
+
+<body>
+    <ul>
+        <li class="first">项目1</li>
+        <li>项目2
+            <ul>
+                <li>子项目</li>
+            </ul>
+        </li>
+        <li>项目3</li>
+        <li>项目4</li>
+        <li>项目5</li>
+        <li>项目6</li>
+    </ul>
+</body>
+
+</html>
