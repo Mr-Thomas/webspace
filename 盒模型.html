@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<!-- 盒子主要的5个属性 -->
+<!-- 
+    width   宽度 内容的宽度，不是盒子的宽度
+    height  高度 内容的高度，不是盒子的高度
+    padding 内边距
+    border  边框
+    margin  外边距 
+ -->
+<!-- 注意 -->
+<!-- 如果要保持一个盒子真实宽度不变，那么加width就要减padding；加padding就要减width -->
+
+<!-- border 三要素【粗细 线型 颜色】 -->
+<!-- 按3要素拆开
+    border-width: 10px;
+    border-style: solid; 实线
+    border-color: red;
+    等价于 ：border: 10px solid red;   /* 粗细 线型 颜色 */
+    按方向拆开
+    border-top: 10px solid red;
+    border-right: 10px solid red;
+    border-bottom: 10px solid red;
+    border-left: 10px solid red;
+    等价于 ：border: 10px solid red;
+ -->
+
+<style type="text/css">
+    p {
+        width: 100px;
+        height: 100px;
+        /* padding: 10px; */
+        /* padding-top: 20px;
+        padding-right: 40px;
+        padding-bottom: 40px;
+        padding-left: 20px;  */
+        /* 上右下左 固定顺序 */
+        /* padding: 20px 40px 40px 20px; */
+        /* 上右 自动补齐 下左 */
+        /* padding: 20px 40px; */
+        /* 用小属性层叠大属性 大属性写在前边 */
+        padding: 20px;
+        padding-left: 35px;
+        border: 3px solid red;
+        margin: 5px;
+        background-color: blueviolet;
+    }
+
+    /* 改盒子的宽是多少？？？ */
+    /* 262 */
+    div {
+        width: 200px;
+        height: 200px;
+        /* 上右下左 */
+        padding: 10px 20px 30px;
+        padding-right: 40px;
+        border: 1px solid red;
+    }
+
+    /* 盒子宽：302 高：272 */
+    /* 用小属性层叠大属性 大属性写在前边  */
+    /* 用小属性层叠大属性 小属性在大属性前边是不生效的  */
+    .box {
+        width: 200px;
+        height: 200px;
+        padding-left: 10px;
+        padding-right: 20px;
+        padding: 40px 50px 60px;
+        padding-bottom: 30px;
+        /* 粗细 线型 颜色 */
+        border: 1px solid rebeccapurple;
+    }
+
+    /* 有些标签默认有padding margin值 eg ul li  清除*/
+    /* 并集选择器 */
+    ul,
+    li {
+        margin: 0;
+        padding: 0;
+    }
+
+    /* 小元素后面的是空格隔开的多个值 那么就是上右下左 */
+    .border {
+        width: 200px;
+        height: 200px;
+        border-width: 10px 20px;
+        /* 上右下左 */
+        border-style: solid dashed dotted;
+        /* 上右下左 */
+        border-color: red green blue yellow;
+    }
+</style>
+
+<body>
+    <div class="border"></div>
+    <ul>
+        <li>文字</li>
+        <li>文字</li>
+        <li>文字</li>
+        <li>文字</li>
+        <li>文字</li>
+    </ul>
+    <div class="box">zhen</div><br>
+    <div>猪猪猪</div>
+    <p>哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈</p>
+</body>
+
+</html>
