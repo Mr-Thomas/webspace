@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<!-- h1 块级元素 
+    霸占一行，不能与其他元素并列
+    能接受宽、高
+    如果不设置宽度，那么宽度将默认变为父亲的100%
+-->
+<!-- 
+    span 行内元素
+    与其他行内元素并排
+    不能设置宽、高。默认的宽度就是文字的宽度
+ -->
+
+<!-- 标签分类：
+    文本级  eg: p、span、a、b、u、i、em
+    容器级  eg: dev、h系列、li、dt、dd
+-->
+<!-- 
+     css分类和和标签分类一样【特殊：p标签】
+        文本级标签 --》 行内元素【p是文本级标签，块内元素】
+        容器级标签 --》 块级元素
+  -->
+<style type="text/css">
+    h1 {
+        width: 400px;
+        height: 60px;
+        background-color: pink;
+    }
+
+    span {
+        width: 400px;
+        height: 60px;
+        background-color: pink;
+    }
+
+    /* 
+    display: inline;
+    块级元素 变 行内元素
+    不能设置宽、高
+    与其他元素并排
+    */
+    div {
+        display: inline;
+        background-color: red;
+        height: 60px;
+        width: 300px;
+    }
+
+    /* 
+    display: block;
+    行内元素 变 块级元素
+    独占一行
+    能接受宽、高
+    不能与其他元素并列
+    */
+    b {
+        display: block;
+        background-color: red;
+        height: 60px;
+        width: 300px;
+    }
+</style>
+
+<body>
+    <div>块级元素01</div>
+    <div>块级元素02</div>
+    <h1>哈哈哈哈哈</h1>
+    <h1>嘻嘻嘻嘻嘻</h1>
+
+
+    <span>哈哈哈哈哈</span>
+    <span>嘻嘻嘻嘻嘻</span>
+    <b>行内元素01</b>
+    <b>行内元素02</b>
+</body>
+
+</html>

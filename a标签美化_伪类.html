@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<!-- a标签 4种伪类 -->
+<!-- 
+:link      用户没有访问过的链接的样式；
+:visited   用户访问过的链接的样式；
+:hover     用户鼠标悬停链接的样式；
+:active    用户鼠标点击链接，但是不松手的样式；
+【必须按以上顺序，否则失效】
+ -->
+<!-- 
+    a标签 不仅需要控制a这个盒子，还需要控制它的伪类
+    一定要将a标签写在前面，:link :visited :hover :active这些伪类写在后边
+ -->
+<style type="text/css">
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    .nav {
+        width: 960px;
+        height: 40px;
+        border: 1px solid black;
+        margin: 100px auto;
+    }
+
+    ul {
+        list-style: none;
+    }
+
+    li {
+        float: left;
+        width: 120px;
+        height: 40px;
+        /* height 和line-height 一样垂直居中 */
+        line-height: 40px;
+        /* 文本居中 */
+        text-align: center;
+    }
+
+    /* a标签 不仅需要控制a这个盒子，还需要控制它的伪类
+    一定要将a标签写在前面，:link :visited :hover :active这些伪类写在后边 */
+    /* 
+    a标签的宽高和li标签一样 在这个盒子范围内都可以点击链接
+    a标签是行内元素 需 转块级元素【display: block】
+    */
+    a {
+        display: block;
+        width: 120px;
+        height: 40px;
+    }
+
+    /* :link      用户没有访问过的链接的样式；
+    :visited   用户访问过的链接的样式；
+    :hover     用户鼠标悬停链接的样式；
+    :active    用户鼠标点击链接，但是不松手的样式；
+    【必须按以上顺序，否则失效】 */
+    /* 逗号隔开，表示 没访问过 和 访问过都是这个样式 */
+    a:link,
+    a:visited {
+        /* 去下划线 */
+        text-decoration: none;
+        background-color: cornsilk;
+        color: red;
+    }
+
+    /* 
+    a:visited {
+        color: blue;
+    }*/
+
+    a:hover {
+        background-color: green;
+        font-weight: bold;
+        color: whitesmoke;
+    }
+
+    a:active {
+        color: pink;
+    }
+</style>
+
+<body>
+    <div class="nav">
+        <ul>
+            <li><a href="123.com">地址链接</a></li>
+            <li><a href="./css作业.html">地址链接</a></li>
+            <li><a href="#">地址链接</a></li>
+            <li><a href="#">地址链接</a></li>
+            <li><a href="#">地址链接</a></li>
+            <li><a href="#">地址链接</a></li>
+            <li><a href="#">地址链接</a></li>
+            <li><a href="#">地址链接</a></li>
+        </ul>
+    </div>
+
+
+
+
+
+    <a href="./css作业.html">css练习</a>
+    <a href="./块级元素行内元素.html">块级元素行内元素</a>
+    <a href="4444.com">盒模型</a>
+</body>
+
+</html>
