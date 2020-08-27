@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script type="text/javascript">
+    var object = ["11", "22", "19"];
+    //普通for循环
+    for (var i = 1; i <= 5; i++) {
+        console.log("普通for ：" + i);
+    }
+    //forEach 循环
+    object.forEach(element => {
+        console.log("forEach... : " + element);
+    });
+    //for of 循环
+    for (const iterator of object) {
+        console.log("for...of... : " + iterator);
+    }
+    //for in 循环
+    for (const key in object) {
+        console.log("索引key : " + key);
+        if (object.hasOwnProperty(key)) {
+            const element = object[key];
+            console.log("for...in... : " + element);
+        }
+    }
+
+    var a = "Hi";
+    var resp = sayHello(a);
+    console.log(resp);
+
+    function sayHello(a) {
+        console.log(a + ",你好!");
+        return a;
+    }
+</script>
+
+<body>
+
+</body>
+
+</html>
