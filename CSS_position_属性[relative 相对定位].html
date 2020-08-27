@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<!-- 三张定位: 相对定位、绝对定位、固定定位 -->
+<!-- 
+    相对定位：position:relative 【不脱标】  
+        1、相对于其正常位置【老家】进行定位。因此，"left:100px" 会向元素的LEFT位置添加100像素,即向右移动100px。
+        2、不脱标，老家留坑，形影分离，真实物理位置还在老家(标准流位置)
+        作用：  
+            1、微调元素
+            2、绝对定位的参考，子绝父相
+            3、相对定位有坑，所以一般不做“压盖”效果。
+
+    绝对定位：position:absolute 【脱标，后边的元素向前填充】
+    
+    固定定位：position:fixed 【脱标】
+ -->
+<style type="text/css">
+    div {
+        width: 200px;
+        height: 200px;
+    }
+
+    .box1 {
+        background-color: yellowgreen;
+    }
+
+    .box2 {
+        background-color: skyblue;
+        position: relative;
+        left: 100px;
+        top: 150px;
+    }
+
+    .box3 {
+        background-color: orange;
+    }
+
+    .txt {
+        font-size: 30px;
+    }
+
+    .button {
+        /* 相对定位 老家留坑，形影分离，浏览器渲染影子 */
+        position: relative;
+        bottom: 5px;
+        left: 3px;
+    }
+</style>
+
+<body>
+
+    <p>
+        <input class="txt" type="text">
+        <input class="button" type="button" value="按钮">
+    </p>
+
+    <div class="box1"></div>
+    <div class="box2"></div>
+    <div class="box3"></div>
+</body>
+
+</html>
