@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<!-- 三种定位: 相对定位、绝对定位、固定定位 -->
+<!-- 
+    相对定位：position:relative 【不脱标】  
+        1、相对于其正常位置【老家】进行定位。因此，"left:100px" 会向元素的LEFT位置添加100像素,即向右移动100px。
+        2、不脱标，老家留坑，形影分离，真实物理位置还在老家(标准流位置)
+        作用：  
+            1、微调元素
+            2、绝对定位的参考，子绝父相
+            3、相对定位有坑，所以一般不做“压盖”效果。
+
+    绝对定位：position:absolute 【脱标(脱离标准文档流)[标签不区分行内元素、块级元素]，后边的元素向前填充】
+        -行内元素、块级元素只在标准文档流里适用，脱标后不适用，即行内元素(eg:span)也可以设置宽高了。
+        绝对定位参考点：
+            1、如果用top描述，那么定位的参考点就是页面的左上角，注意：不是浏览器的左上角；
+                - <img src="./img/绝对定位参考点_top.jpg" alt="绝对定位参考点_top">
+            2、如果用bottom描述，那么就是浏览器首屏窗口尺寸，对应页面左下角(随着浏览器窗口的大小移动)。
+                - <img src="./img/绝对定位参考点_bottom.jpg" alt="绝对定位参考点_bottom">
+                - <img src="./img/绝对定位参考点_bottom_案例.jpg" alt="绝对定位参考点_bottom_案例">
+        以盒子为参考点【子绝父相】(释：父可以是父亲、爷爷、祖宗，当父亲爷爷都加了相对定位，则听父亲的，即以父亲为参考点，听最近的)
+            一个绝对定位的元素，如果父辈元素中出现了也定位了的元素，那么将以父辈这个元素，为参考点。
+        不一定是相对定位，任何定位都可以作为参考点【子绝父绝】    
+        注意：子绝父绝、子绝父相、子绝父固，都可以给儿子定位。但是子绝、父绝没有一个盒子在标准文档流里面，所以页面不稳固，没有实战用途。
+            子绝父相有意义，父没有脱标，儿子脱标在父亲的范围里面移动。
+
+    固定定位：position:fixed 【脱标】
+ -->
+<style type="text/css">
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    div {
+        width: 400px;
+        height: 400px;
+        border: 10px solid red;
+        margin: 100px;
+        padding: 100px;
+        /* 绝对定位 */
+        position: absolute;
+    }
+
+    p {
+        width: 100px;
+        height: 100px;
+        background-color: orange;
+        position: absolute;
+        top: 30px;
+        left: 30px;
+    }
+</style>
+
+<body>
+    <div>
+        <p></p>
+    </div>
+</body>
+
+</html>
