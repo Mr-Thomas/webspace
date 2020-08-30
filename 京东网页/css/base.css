@@ -165,25 +165,30 @@ em {
     background-color: #f1f1f1;
     width: 100%;
 }
-
+/* dt i s 定位小三角 */
 .dt {
     padding: 0 20px 0 10px;
     position: relative;
 }
 
 .dt i {
-    /* font-size/line-height font-family */
-    font: 15px/15px "宋体";
+    /* font-weight font-size/line-height font-family */
+    /* font-weight: bold;  【bold加：粗，约等于700; normal：不加粗】*/
+    font: 700 15px/15px "宋体";
+    /* 子绝父相 */
     position: absolute;
     top: 13px;
     right: 3px;
     height: 7px;
-    overflow: hidden;
     width: 15px;
+    /* 隐藏"◇"上半部分 */
+    overflow: hidden;
 }
 
 .dt s {
+    /* 子绝父绝 */
     position: absolute;
-    top: -8px;
+    /* 在元素的上边加-7个像素，即向上移动7个像素 */
+    top: -7px;
     left: 0;
 }
