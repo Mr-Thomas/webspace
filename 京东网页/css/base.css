@@ -165,13 +165,17 @@ em {
     background-color: #f1f1f1;
     width: 100%;
 }
-/* dt i s 定位小三角 */
-.dt {
+
+/* dt/fore i s 定位小三角 */
+.dt,
+/* 提升权重 */
+.shortcut .fore {
     padding: 0 20px 0 10px;
     position: relative;
 }
 
-.dt i {
+.dt i,
+.fore i {
     /* font-weight font-size/line-height font-family */
     /* font-weight: bold;  【bold加：粗，约等于700; normal：不加粗】*/
     font: 700 15px/15px "宋体";
@@ -185,10 +189,65 @@ em {
     overflow: hidden;
 }
 
-.dt s {
+.dt s,
+.fore s {
     /* 子绝父绝 */
     position: absolute;
     /* 在元素的上边加-7个像素，即向上移动7个像素 */
     top: -7px;
     left: 0;
 }
+
+.fr li {
+    float: left;
+    padding: 0 10px 0 10px;
+}
+
+.fr .line {
+    width: 1px;
+    height: 12px;
+    background-color: #dddddd;
+    margin-top: 9px;
+    padding: 0;
+}
+
+/* .shortcut提升权重 */
+.shortcut .tel-jd {
+    padding: 0 20px 0 25px;
+}
+
+.tel {
+    position: absolute;
+    width: 15px;
+    height: 20px;
+    background: url(../../img/sprite.png) no-repeat;
+    left: 5px;
+    top: 5px;
+}
+
+/*头部导航结束*/
+
+/* topbanner start */
+.topbanner {
+    background-color: #8a25c6;
+}
+
+.tp {
+    position: relative;
+}
+
+.close-banner {
+    /* 子绝父相 */
+    position: absolute;
+    top: 5px;
+    right: 3px;
+    width: 19px;
+    height: 19px;
+    background: url(../../img/close.png) no-repeat;
+}
+
+.close-banner:hover {
+    background-position:0 bottom;
+}
+
+/* topbanner end */
