@@ -167,14 +167,14 @@ em {
 }
 
 /* dt/fore i s 定位小三角 */
-.dt,
+.shortcut .dt,
 /* 提升权重 */
 .shortcut .fore {
     padding: 0 20px 0 10px;
     position: relative;
 }
 
-.dt i,
+.shortcut .dt i,
 .fore i {
     /* font-weight font-size/line-height font-family */
     /* font-weight: bold;  【bold加：粗，约等于700; normal：不加粗】*/
@@ -367,4 +367,98 @@ em {
 
 .hotwords a {
     margin-right: 6px;
+}
+
+/* 底部start */
+.slogen {
+    height: 54px;
+    padding: 20px 0;
+    background-color: #f5f5f5;
+    position: relative;
+}
+
+.item {
+    width: 302px;
+    position: absolute;
+    top: 20px;
+    /* left:50%刚好在正中间线 */
+    left: 50%;
+    /* 左移302px，刚好在中线的左侧 */
+    /* margin-left: -302px; */
+}
+
+.slogen2 {
+    /* 左移302px，刚好在中线的左侧 */
+    margin-left: -302px;
+}
+
+.slogen1 {
+    margin-left: -604px;
+}
+
+.slogen4 {
+    /* 右移302px */
+    margin-left: 302px;
+}
+
+.shopping dl {
+    margin-top: 25px;
+    width: 198px;
+    float: left;
+}
+
+.shopping dt,
+.coverage .dt {
+    font-size: 16px;
+    height: 28px;
+    font-family: microsoft yahei;
+}
+
+.shopping dd {
+    height: 20px;
+}
+
+.coverage {
+    float: right;
+    width: 210px;
+    height: 165px;
+    background: url(../../img/china.png) no-repeat left bottom;
+    margin-top: 15px;
+}
+
+.coverage .dt {
+    margin-top: 10px;
+}
+
+.coverage .dd {
+    margin-top: 10px;
+}
+
+.coverage p {
+    line-height: 18px;
+}
+
+.looklook {
+    text-align: right;
+    margin-top: 5px;
+}
+
+.againw {
+    border-top: 1px solid #E5E5E5;
+    padding: 23px 0 30px 0;
+    margin-top: 30px;
+    text-align: center;
+}
+
+.links {
+    height: 25px;
+}
+
+.links a {
+    padding: 0 6px;
+}
+
+.copyright {
+    line-height: 18px;
+    margin-bottom: 10px;
 }
