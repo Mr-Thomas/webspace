@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        /* 
+         层级：【层级高的压盖层级低的】
+         标准流<浮动<定位
+        */
+        /* 
+        方法一：定位>浮动
+        .test {
+            width: 150px;
+            height: 300px;
+            border: 1px solid #ccc;
+            margin-top: 100px;
+            float: left;
+            margin-left: -1px;
+        }
+        .test:hover {
+            border: 1px solid #f40;
+            -用相对定位【相对定位，老家有坑，占位置】提升层级，鼠标放上去，让该盒子在最上边
+            position: relative;
+        } */
+
+        /* 方法二：都是定位，z-index值大的压盖小的 */
+        .test {
+            width: 150px;
+            height: 300px;
+            border: 1px solid #ccc;
+            margin-top: 100px;
+            float: left;
+            margin-left: -1px;
+            /* 都是定位 默认z-index为0 往后排列，最后一个在最上边，可以显示全框，因此，鼠标放上的时候，加上z-index值*/
+            position: relative;
+        }
+
+        .test:hover {
+            border: 1px solid #f40;
+            /* 用z-index值来压盖【只有定位的元素才有index值】 */
+            z-index: 1;
+        }
+
+        /* 
+         层级：
+         标准流<浮动<定位
+        */
+    </style>
+</head>
+
+<body>
+    <div class="test"></div>
+    <div class="test"></div>
+    <div class="test"></div>
+    <div class="test"></div>
+    <div class="test"></div>
+</body>
+
+</html>

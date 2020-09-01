@@ -369,6 +369,104 @@ em {
     margin-right: 6px;
 }
 
+/* nav部分 */
+.jd-nav {
+    widows: 100%;
+    height: 44px;
+    border-bottom: 2px solid #b1191a;
+}
+
+.dropdown {
+    width: 210px;
+    height: 44px;
+    float: left;
+
+    /* .dropdown .dd的效果被压盖了 提升父亲的层级*/
+    position: relative;
+    z-index: 10;
+}
+
+.dropdown .dt {
+    height: 44px;
+}
+
+.dropdown .dt a {
+    display: block;
+    height: 44px;
+    font: 400 15px/44px "microsoft yahei";
+    background-color: #b1191a;
+    color: #fff;
+    /* a没有宽【没写width，继承父亲的，如果写width：100%也会撑开】，不会撑开盒子 */
+    padding-left: 10px;
+}
+
+.dropdown .dd {
+    /* height: 456px; */
+    background-color: #c81623;
+    margin-top: 2px;
+}
+
+.dropdown .items {
+    height: 31px;
+    line-height: 31px;
+    /* 没给width 不会撑开 */
+    border-left: 1px solid #b61d1d;
+    padding-left: 10px;
+    color: #ffffff;
+    font-size: 14px;
+    font-family: "微软雅黑";
+}
+
+.dropdown .items h3 {
+    float: left;
+}
+
+.dropdown .items span {
+    float: right;
+    margin-right: 15px;
+    font-family: "宋体";
+    font-weight: 600;
+}
+
+.navitems {
+    width: 680px;
+    height: 44px;
+    float: left;
+}
+
+.navitems li {
+    float: left;
+}
+
+.navitems li.new {
+    background: url(../../img/new.jpg) no-repeat top right;
+}
+
+.navitems li a {
+    display: block;
+    color: #333333;
+    font: 400 15px/44px "微软雅黑";
+    padding: 0 20px;
+}
+
+.navitems li a:hover {
+    color: #b1191a;
+}
+
+.bike {
+    width: 140px;
+    height: 44px;
+    float: right;
+    background: url(../../img/bike.jpg) no-repeat;
+}
+
+.bike a {
+    /* a是行内元素 转块 */
+    display: block;
+    /* 宽可以继承 高不能继承 */
+    height: 44px;
+}
+
 /* 底部start */
 .slogen {
     height: 54px;
