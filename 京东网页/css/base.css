@@ -247,7 +247,124 @@ em {
 }
 
 .close-banner:hover {
-    background-position:0 bottom;
+    background-position: 0 bottom;
 }
 
 /* topbanner end */
+
+.logo {
+    width: 360px;
+    height: 75px;
+    float: left;
+    padding-top: 25px;
+    /* background-repeat【背景平铺】no-repeat repeat-x repeat-y 不重复 水平重复 垂直重复 */
+    /* background-position【背景定位】 0 25px x轴和y轴 */
+    background: url(../../img/logo.png) no-repeat 0 25px;
+    position: relative;
+}
+
+.logo .jd-a {
+    display: block;
+    width: 270px;
+    height: 60px;
+    /* 隐藏“京东”两字 */
+    text-indent: -2000em;
+}
+
+.db11 {
+    position: absolute;
+    width: 180px;
+    height: 80px;
+    top: 10px;
+    left: 168px;
+}
+
+.search {
+    width: 538px;
+    height: 35px;
+    float: left;
+    margin-top: 25px;
+}
+
+.search input {
+    width: 450px;
+    height: 32px;
+    border: 2px solid #b61d1d;
+    padding-left: 4px;
+    color: #666;
+    /* 字号/行号 字体 */
+    font: 14px/32px "microsoft yahei";
+    float: left;
+}
+
+.search button {
+    width: 80px;
+    height: 36px;
+    background-color: #b61d1d;
+    float: left;
+    font: 16px/36px "microsoft yahei";
+    color: #fff;
+    /* 
+    cursor: pointer; 鼠标变小手
+    cursor: default; 默认，就是小箭头
+    cursor: move;    移动图标
+    cursor: text;    文本输入图标
+    */
+    cursor: pointer;
+}
+
+.car {
+    width: 96px;
+    height: 34px;
+    padding-left: 43px;
+    float: right;
+    margin: 25px 65px 0 0;
+    border: 1px solid #dfdfdf;
+    line-height: 34px;
+    position: relative;
+}
+
+.icon1 {
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    width: 16px;
+    height: 13px;
+    background: url(../../img/sprite.png) no-repeat -1px -59px;
+}
+
+.icon2 {
+    /* font-weight font-size/line-height font-family */
+    /* font-weight: bold;  【bold加粗，约等于700; normal：不加粗】*/
+    font: 400 13px/13px "simsun";
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.icon3 {
+    width: 16px;
+    height: 14px;
+    /* 行高 和 高一样 垂直居中 */
+    line-height: 14px;
+    /* 水平居中 */
+    text-align: center;
+    color: #fff;
+    background-color: #c81623;
+    font-size: 12px;
+    position: absolute;
+    top: -4px;
+    /* 圆角处理 根据宽高选择 生成相应的圆角 */
+    /* 上 右 下 左 */
+    border-radius: 7px 8px 7px 0;
+}
+
+.hotwords {
+    float: left;
+    width: 500px;
+    padding: 7px 0;
+}
+
+.hotwords a {
+    margin-right: 6px;
+}
