@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket STOMP 测试 - @stomp/stompjs</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            background: #f5f7fa;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 25px;
+        }
+
+        .header h2 {
+            margin: 0 0 5px 0;
+        }
+
+        .header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .content {
+            padding: 25px;
+        }
+
+        .section {
+            margin-bottom: 25px;
+            border: 1px solid #e1e4e8;
+            border-radius: 8px;
+            padding: 15px;
+            background: #fafbfc;
+        }
+
+        .section-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #24292e;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input,
+        button,
+        select {
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid #d1d5da;
+            font-size: 14px;
+        }
+
+        input {
+            width: 70%;
+            margin-right: 10px;
+        }
+
+        button {
+            background: #2c974b;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-right: 8px;
+        }
+
+        button:hover {
+            background: #2a8245;
+        }
+
+        .btn-danger {
+            background: #d73a49;
+        }
+
+        .btn-danger:hover {
+            background: #cb2431;
+        }
+
+        .btn-secondary {
+            background: #6a737d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .log-box {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border-radius: 8px;
+            padding: 15px;
+            height: 400px;
+            overflow: auto;
+            font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .log-info {
+            color: #4fc3f7;
+        }
+
+        .log-success {
+            color: #81c784;
+        }
+
+        .log-error {
+            color: #e57373;
+        }
+
+        .log-warning {
+            color: #ffb74d;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+
+        .status-connected {
+            background: #81c784;
+            color: #1b5e20;
+        }
+
+        .status-disconnected {
+            background: #e57373;
+            color: #c62828;
+        }
+
+        .status-connecting {
+            background: #ffb74d;
+            color: #e65100;
+        }
+
+        .flex-row {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .token-input {
+            width: 100%;
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        .badge {
+            background: #e1e4e8;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-family: monospace;
+        }
+
+        hr {
+            margin: 15px 0;
+            border: none;
+            border-top: 1px solid #e1e4e8;
+        }
+
+        .config-panel {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 10px;
+            align-items: center;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h2>🔌 WebSocket STOMP 测试</h2>
+            <p>基于 @stomp/stompjs v7.0.0 | Spring Boot STOMP 后端</p>
+        </div>
+
+        <div class="content">
+            <!-- 连接配置 -->
+            <div class="section">
+                <div class="section-title">📡 连接配置</div>
+                <div class="config-panel" style="margin-bottom: 15px;">
+                    <span>服务地址:</span>
+                    <code class="badge" style="background:#f0f0f0; padding: 5px 10px;">
+                    192.168.11.38:9898/ws
+                </code>
+
+                    <span>Token 方式:</span>
+                    <select id="tokenType" style="width: auto;">
+                        <option value="url">URL 参数 (?Authorization=xxx)</option>
+                        <option value="header">Header (connectHeaders)</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <label>🔑 Token (JWT):</label>
+                    <input type="text" id="token" class="token-input"
+                        value="eyJhbGciOiJIUzI1NiJ9.eyJyZWFsTmFtZSI6IueuoeeQhuWRmCIsInVzZXJJZCI6MTk5MTgwODc3MzEzNTQ1NDIwOSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTc3NzMzODY2NCwiZXhwIjoxNzc3MzgxODY0fQ.PmAJ2f9_5i4hEFag4cc0BiKHPcX3a4xdtZEH4xfMT6M"
+                        style="width: 100%; font-size: 11px;" />
+                </div>
+                <div class="flex-row">
+                    <button id="connectBtn" onclick="doConnect()">🔗 连接</button>
+                    <button id="disconnectBtn" onclick="doDisconnect()" class="btn-secondary" disabled>🔌 断开</button>
+                    <span id="statusBadge" class="status status-disconnected">未连接</span>
+                </div>
+            </div>
+
+            <!-- 订阅管理 -->
+            <div class="section">
+                <div class="section-title">📋 订阅管理</div>
+                <div class="flex-row">
+                    <input type="text" id="subscribeDest" placeholder="/user/queue/msg 或 /topic/notice"
+                        value="/user/queue/msg" style="width: 300px;" />
+                    <button onclick="doSubscribe()" class="btn-secondary">➕ 订阅</button>
+                    <button onclick="doUnsubscribe()" class="btn-secondary">➖ 取消订阅</button>
+                </div>
+                <div id="subscriptionStatus" style="margin-top: 10px; font-size: 12px; color: #6a737d;">
+                    ⚪ 暂无订阅
+                </div>
+            </div>
+
+            <!-- 消息发送 -->
+            <div class="section">
+                <div class="section-title">✉️ 发送消息</div>
+                <div class="flex-row">
+                    <input type="text" id="destination" placeholder="/app/ack" value="/app/ack" style="width: 150px;" />
+                    <input type="text" id="msg" placeholder="消息内容" style="flex: 1;" />
+                    <button id="sendBtn" onclick="doSend()" disabled>📤 发送</button>
+                </div>
+                <div style="margin-top: 10px; font-size: 12px; color: #6a737d;">
+                    💡 消息格式: { "messageIds": ["xxx"], "ackType": "RECEIVED", "extra": {...} }
+                </div>
+            </div>
+
+            <!-- 日志 -->
+            <div class="section">
+                <div class="section-title" style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>📝 消息日志</span>
+                    <div>
+                        <button onclick="clearLog()"
+                            style="background: #6a737d; padding: 4px 12px; font-size: 12px;">清空</button>
+                        <button onclick="exportLog()"
+                            style="background: #0366d6; padding: 4px 12px; font-size: 12px;">导出</button>
+                    </div>
+                </div>
+                <div id="logBox" class="log-box">
+                    <span class="log-info">[系统] 就绪，等待连接...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let stompClient = null;
+        let isConnected = false;
+        let subscriptions = new Map(); // 存储订阅信息: subscriptionId -> { dest, subscription }
+        let nextSubId = 0;
+
+        // 日志输出
+        function log(message, type = 'info') {
+            const logBox = document.getElementById('logBox');
+            const timestamp = new Date().toLocaleTimeString();
+            let colorClass = '';
+            switch (type) {
+                case 'success': colorClass = 'log-success'; break;
+                case 'error': colorClass = 'log-error'; break;
+                case 'warning': colorClass = 'log-warning'; break;
+                default: colorClass = 'log-info';
+            }
+            const logEntry = document.createElement('div');
+            logEntry.innerHTML = `<span style="color:#888;">[${timestamp}]</span> <span class="${colorClass}">${escapeHtml(message)}</span>`;
+            logBox.appendChild(logEntry);
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function (m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        function clearLog() {
+            const logBox = document.getElementById('logBox');
+            logBox.innerHTML = '<span class="log-info">[系统] 日志已清空</span>';
+        }
+
+        function exportLog() {
+            const logBox = document.getElementById('logBox');
+            const content = logBox.innerText;
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `websocket-log-${new Date().toISOString().slice(0, 19)}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            log('日志已导出', 'success');
+        }
+
+        function updateUI(connected) {
+            isConnected = connected;
+            const connectBtn = document.getElementById('connectBtn');
+            const disconnectBtn = document.getElementById('disconnectBtn');
+            const sendBtn = document.getElementById('sendBtn');
+            const statusBadge = document.getElementById('statusBadge');
+
+            if (connected) {
+                connectBtn.disabled = true;
+                disconnectBtn.disabled = false;
+                sendBtn.disabled = false;
+                statusBadge.className = 'status status-connected';
+                statusBadge.innerText = '已连接';
+            } else {
+                connectBtn.disabled = false;
+                disconnectBtn.disabled = true;
+                sendBtn.disabled = true;
+                statusBadge.className = 'status status-disconnected';
+                statusBadge.innerText = '未连接';
+            }
+        }
+
+        function updateSubscriptionStatus() {
+            const el = document.getElementById('subscriptionStatus');
+            if (subscriptions.size === 0) {
+                el.innerHTML = '⚪ 暂无订阅';
+            } else {
+                const subs = Array.from(subscriptions.values()).map(s => s.dest).join(', ');
+                el.innerHTML = `✅ 已订阅: ${subs}`;
+            }
+        }
+
+        function doConnect() {
+            const token = document.getElementById('token').value.trim();
+            const tokenType = document.getElementById('tokenType').value;
+
+            // 添加这个开关
+            const useProxy = true;  // true=通过Nginx代理(443端口), false=直连后端(9898端口)
+
+            if (!token) {
+                log('❌ 请填写 Token', 'error');
+                return;
+            }
+
+            let brokerURL = '';
+            let connectHeaders = {};
+
+            if (useProxy) {
+                // 通过 Nginx 代理 (端口 443)
+                const wsProtocol = 'wss:';
+                const host = '192.168.11.38';
+
+                if (tokenType === 'url') {
+                    brokerURL = `${wsProtocol}//${host}/socket?Authorization=${encodeURIComponent(token)}`;
+                    log(`🔌 使用 URL 参数方式通过 Nginx 代理连接`, 'info');
+                } else {
+                    brokerURL = `${wsProtocol}//${host}/socket`;
+                    connectHeaders = { 'Authorization': token };
+                    log(`🔌 使用 Header 方式通过 Nginx 代理连接`, 'info');
+                }
+            } else {
+                // 直连后端 (端口 9898)
+                if (tokenType === 'url') {
+                    brokerURL = `wss://192.168.11.38:9898/socket?Authorization=${encodeURIComponent(token)}`;
+                    log(`🔌 使用 URL 参数方式直连后端`, 'info');
+                } else {
+                    brokerURL = `wss://192.168.11.38:9898/socket`;
+                    connectHeaders = { 'Authorization': token };
+                    log(`🔌 使用 Header 方式直连后端`, 'info');
+                }
+            }
+
+            log(`连接地址: ${brokerURL}`, 'info');
+
+            stompClient = new StompJs.Client({
+                brokerURL: brokerURL,
+                connectHeaders: connectHeaders,
+                debug: (str) => {
+                    if (str && !str.includes('heartbeat') && !str.includes('keepalive')) {
+                        console.log('STOMP debug:', str);
+                        log(`[DEBUG] ${str.substring(0, 200)}`, 'info');
+                    }
+                },
+                reconnectDelay: 5000,
+                heartbeatIncoming: 20000,
+                heartbeatOutgoing: 20000,
+                logRawCommunication: false
+            });
+
+            stompClient.onConnect = (frame) => {
+                log(`✅ WebSocket 连接成功！`, 'success');
+                log(`   STOMP 版本: ${frame.version}`, 'info');
+                updateUI(true);
+            };
+
+            stompClient.onStompError = (frame) => {
+                const errorMsg = frame.headers['message'] || '未知错误';
+                log(`❌ STOMP 协议错误: ${errorMsg}`, 'error');
+                log(`   详细: ${frame.body}`, 'error');
+                updateUI(false);
+            };
+
+            stompClient.onWebSocketError = (event) => {
+                log(`❌ WebSocket 错误: ${event}`, 'error');
+                updateUI(false);
+            };
+
+            stompClient.onDisconnect = () => {
+                log('🔌 WebSocket 连接已断开', 'warning');
+                // 清空订阅记录
+                subscriptions.clear();
+                updateSubscriptionStatus();
+                updateUI(false);
+            };
+
+            stompClient.activate();
+        }
+
+        function doDisconnect() {
+            if (stompClient && isConnected) {
+                log('🔌 正在断开连接...', 'warning');
+                stompClient.deactivate();
+            } else {
+                log('⚠️ 当前未连接', 'warning');
+            }
+        }
+
+        function doSubscribe() {
+            if (!stompClient || !isConnected) {
+                log('⚠️ 未连接，请先连接 WebSocket', 'warning');
+                return;
+            }
+
+            const destination = document.getElementById('subscribeDest').value.trim();
+            if (!destination) {
+                log('⚠️ 请输入订阅目标', 'warning');
+                return;
+            }
+
+            // 检查是否已订阅
+            let existing = null;
+            for (const [id, sub] of subscriptions) {
+                if (sub.dest === destination) {
+                    existing = id;
+                    break;
+                }
+            }
+            if (existing) {
+                log(`⚠️ 已订阅 ${destination}，请勿重复订阅`, 'warning');
+                return;
+            }
+
+            const subId = `sub-${nextSubId++}`;
+
+            try {
+                const subscription = stompClient.subscribe(destination, (message) => {
+                    log(`📩 [${destination}] 收到消息: ${message.body}`, 'success');
+                    try {
+                        const data = JSON.parse(message.body);
+                        log(`    └─ 解析结果: ${JSON.stringify(data, null, 2).substring(0, 500)}`, 'info');
+                    } catch (e) {
+                        // 不是 JSON，直接显示
+                    }
+                });
+
+                subscriptions.set(subId, { dest: destination, subscription });
+                updateSubscriptionStatus();
+                log(`✅ 订阅成功: ${destination}`, 'success');
+            } catch (err) {
+                log(`❌ 订阅失败: ${err.message}`, 'error');
+            }
+        }
+
+        function doUnsubscribe() {
+            if (!stompClient || !isConnected) {
+                log('⚠️ 未连接', 'warning');
+                return;
+            }
+
+            if (subscriptions.size === 0) {
+                log('⚠️ 暂无订阅', 'warning');
+                return;
+            }
+
+            // 取消最后一个订阅
+            const lastSubId = Array.from(subscriptions.keys()).pop();
+            const sub = subscriptions.get(lastSubId);
+
+            try {
+                sub.subscription.unsubscribe();
+                subscriptions.delete(lastSubId);
+                updateSubscriptionStatus();
+                log(`✅ 取消订阅: ${sub.dest}`, 'success');
+            } catch (err) {
+                log(`❌ 取消失败: ${err.message}`, 'error');
+            }
+        }
+
+        function doSend() {
+            if (!stompClient || !isConnected) {
+                log('⚠️ 未连接，请先连接 WebSocket', 'warning');
+                return;
+            }
+
+            const destination = document.getElementById('destination').value.trim();
+            const msg = document.getElementById('msg').value.trim();
+
+            if (!destination) {
+                log('⚠️ 请输入目标地址', 'warning');
+                return;
+            }
+
+            if (!msg) {
+                log('⚠️ 请输入消息内容', 'warning');
+                return;
+            }
+
+            // 构造消息体（匹配后端预期的格式）
+            let messageBody;
+            try {
+                // 尝试解析为 JSON
+                messageBody = JSON.parse(msg);
+            } catch (e) {
+                // 不是 JSON，使用默认格式
+                messageBody = {
+                    messageIds: [msg],
+                    ackType: "RECEIVED",
+                    extra: {
+                        from: "web-test",
+                        timestamp: new Date().toISOString()
+                    }
+                };
+            }
+
+            try {
+                stompClient.publish({
+                    destination: destination,
+                    body: JSON.stringify(messageBody)
+                });
+                log(`📤 已发送到 ${destination}: ${JSON.stringify(messageBody).substring(0, 200)}`, 'info');
+                document.getElementById('msg').value = '';
+            } catch (err) {
+                log(`❌ 发送失败: ${err.message}`, 'error');
+            }
+        }
+
+        // 页面关闭时主动断开
+        window.addEventListener('beforeunload', () => {
+            if (stompClient && isConnected) {
+                stompClient.deactivate();
+            }
+        });
+
+        // 回车发送
+        document.getElementById('msg').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                doSend();
+            }
+        });
+    </script>
+
+</body>
+
+</html>
