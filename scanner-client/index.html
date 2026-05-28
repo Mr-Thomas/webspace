@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Scanner WS 专业客户端 | 扫描管理平台</title>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: #1677ff;
+            --primary-dark: #0958d9;
+            --primary-bg: #e6f4ff;
+            --success: #52c41a;
+            --warning: #faad14;
+            --error: #ff4d4f;
+            --danger: #ff4d4f;
+            --text: #1f2f3d;
+            --text-secondary: #5a6874;
+            --border: #e4e7ed;
+            --bg-page: #f5f7fa;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-page);
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 24px 28px;
+        }
+
+        /* 顶部连接栏 */
+        .connection-bar {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 16px 24px;
+            margin-bottom: 28px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-right: 8px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary), #69b1ff);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 18px;
+            background: linear-gradient(135deg, #1f2f3d, var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            background: #f8f9fc;
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            padding: 4px 16px;
+            transition: all 0.2s;
+        }
+
+        .input-group:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-bg);
+        }
+
+        .input-group input {
+            border: none;
+            background: transparent;
+            padding: 8px 0;
+            font-size: 13px;
+            width: 200px;
+            outline: none;
+        }
+
+        .input-group span {
+            color: #8c9aab;
+            margin-right: 6px;
+        }
+
+        .btn {
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 13px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #f0f2f5;
+            color: var(--text);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 2px 4px rgba(22, 119, 255, 0.2);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: #fff0f0;
+            color: var(--danger);
+            border: 1px solid #ffccc7;
+        }
+
+        .btn-danger:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 40px;
+            background: #f8f9fc;
+            font-size: 13px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #d9d9d9;
+        }
+
+        .status-dot.on {
+            background: var(--success);
+            box-shadow: 0 0 0 2px rgba(82, 196, 26, 0.2);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.6;
+                transform: scale(0.9);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
+
+        /* 主布局 两栏 */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 480px 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 1100px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 16px;
+            }
+        }
+
+        /* 左侧卡片通用 */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0, 0, 0, 0.01);
+        }
+
+        .card-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* 表单现代风格 */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px 28px;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field-group label {
+            font-size: 13px;
+            font-weight: 500;
+            color: #3a4b62;
+        }
+
+        .field-group input,
+        .field-group select {
+            background: #ffffff;
+            border: 1px solid #dee4ec;
+            border-radius: 14px;
+            padding: 10px 14px;
+            font-size: 14px;
+            transition: all 0.2s;
+            outline: none;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .field-group input:focus,
+        .field-group select:focus,
+        .field:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(22, 119, 255, 0.1);
+        }
+
+        .field {
+            background: #ffffff;
+            border: 1px solid #dee4ec;
+            border-radius: 14px;
+            padding: 10px 14px;
+            font-size: 14px;
+            transition: all 0.2s;
+            outline: none;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* 开关 */
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: #f8fafd;
+            padding: 6px 0;
+            border-radius: 40px;
+        }
+
+        .switch-ui {
+            width: 44px;
+            height: 24px;
+            background: #cbd5e1;
+            border-radius: 40px;
+            position: relative;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .switch-ui.active {
+            background: var(--primary);
+        }
+
+        .switch-ui::after {
+            content: "";
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 3px;
+            transition: 0.2s;
+        }
+
+        .switch-ui.active::after {
+            left: 21px;
+        }
+
+        .checkbox-cluster {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            margin-top: 4px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #ffffff;
+            padding: 6px 14px 6px 10px;
+            border-radius: 40px;
+            border: 1px solid #e2e8f2;
+            cursor: pointer;
+        }
+
+        .checkbox-item:hover {
+            border-color: var(--primary);
+            background: #f6f9ff;
+        }
+
+        .checkbox-item input {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
+            margin: 0;
+        }
+
+        /* 右侧日志 & 图片 */
+        .right-panel {
+            min-width: 0;
+        }
+
+        .log-container {
+            background: #1e1f2c;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .log-header-bar {
+            background: #2a2b3a;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .log-header-bar span {
+            color: #b9c7d9;
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        .log-header-bar .toggle-icon {
+            font-size: 18px;
+            transition: transform 0.2s;
+        }
+
+        .log-header-bar .log-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .log-clear-btn {
+            background: none;
+            border: 1px solid #4a5a7a;
+            color: #8aa0c0;
+            font-size: 11px;
+            padding: 2px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            line-height: 1.6;
+        }
+
+        .log-clear-btn:hover {
+            background: #e74c3c;
+            border-color: #e74c3c;
+            color: #fff;
+        }
+
+        .log-content {
+            height: 340px;
+            overflow-y: auto;
+            font-family: 'SF Mono', monospace;
+            font-size: 12px;
+            padding: 12px;
+            background: #0f1117;
+            color: #e2e8f0;
+            transition: all 0.2s;
+        }
+
+        .log-content.collapsed {
+            display: none;
+        }
+
+        .log-entry {
+            padding: 6px 10px;
+            border-bottom: 1px solid #1e2432;
+            display: flex;
+            gap: 12px;
+            font-family: monospace;
+        }
+
+        .log-time {
+            color: #5f7f9e;
+            flex-shrink: 0;
+        }
+
+        .log-recv .log-text {
+            color: #6fcf97;
+        }
+
+        .log-send .log-text {
+            color: #f2c94c;
+        }
+
+        .log-info .log-text {
+            color: #5dade2;
+        }
+
+        .log-err .log-text {
+            color: #e74c3c;
+        }
+
+        .log-warn .log-text {
+            color: #f39c12;
+        }
+
+        .log-text {
+            word-break: break-all;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            max-height: 280px;
+            overflow-y: auto;
+            padding: 8px 4px;
+        }
+
+        .gallery-item {
+            background: #faf9fe;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #edeff5;
+            position: relative;
+            transition: transform 0.15s;
+            cursor: pointer;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            aspect-ratio: 1 / 1.4;
+            object-fit: cover;
+            display: block;
+        }
+
+        .page-badge {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            color: white;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            position: absolute;
+            top: 6px;
+            left: 6px;
+        }
+
+        /* 大图预览 Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 92%;
+            max-height: 92%;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+            cursor: default;
+        }
+
+        .lightbox-close {
+            position: fixed;
+            top: 20px;
+            right: 28px;
+            color: #fff;
+            font-size: 32px;
+            cursor: pointer;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            transition: background 0.2s;
+            z-index: 1001;
+            user-select: none;
+        }
+
+        .lightbox-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .lightbox-nav {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #fff;
+            font-size: 28px;
+            cursor: pointer;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            transition: background 0.2s;
+            z-index: 1001;
+            user-select: none;
+        }
+
+        .lightbox-nav:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .lightbox-prev {
+            left: 20px;
+        }
+
+        .lightbox-next {
+            right: 20px;
+        }
+
+        .action-bar {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            border-top: 1px solid #ecf3fa;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- 顶部栏 -->
+        <div class="connection-bar">
+            <div class="logo-area">
+                <div class="logo-icon">📠</div>
+                <div class="logo-text">Scanner WS</div>
+            </div>
+            <div class="input-group"><span>🌐</span><input type="text" id="serverUrl" value="localhost:8899"
+                    placeholder="服务器地址:端口"></div>
+            <div class="input-group"><span>🔑</span><input type="text" id="token" placeholder="JWT Token (可选)"></div>
+            <button class="btn btn-primary" id="btnConnect">🔌 连接</button>
+            <button class="btn btn-danger" id="btnDisconnect" disabled>⛔ 断开</button>
+            <div class="status-badge"><span class="status-dot" id="statusDot"></span><span id="connStatus">未连接</span>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <!-- 左侧：参数面板 -->
+            <div class="left-panel">
+                <!-- 扫描仪卡片 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>🖨️ 扫描仪设备</h3>
+                        <div><button class="btn btn-sm" id="btnScannerStatus" style="padding:4px 12px;">刷新状态</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="scannerDisplay" class="scanner-list" style="min-height:80px;">— 点击刷新 —</div>
+                    </div>
+                </div>
+
+                <!-- 新建扫描任务 - 规整模块 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>✨ 新建扫描任务</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-grid">
+                            <div class="field-group full-width"><label>🏷️ Task ID</label><input type="text"
+                                    id="fTaskId" value="task_"></div>
+                            <div class="field-group full-width"><label>🖨️ 选择扫描仪</label><select id="fScanner">
+                                    <option value="">默认（自动选择）</option>
+                                </select></div>
+                        </div>
+                        <div style="display:flex; gap: 24px; margin: 16px 0 12px 0;">
+                            <div class="field-group" style="flex:1;"><label><span>📐</span> DPI 分辨率</label><input
+                                    type="number" id="fDpi" value="200"></div>
+                            <div class="field-group" style="flex:1;"><label><span>🎨</span> 色彩模式</label><select
+                                    id="fColor">
+                                    <option value="bw" selected>⚫ 黑白</option>
+                                    <option value="gray">🌓 灰度</option>
+                                    <option value="rgb">🌈 彩色</option>
+                                </select></div>
+                            <div class="field-group" style="flex:1;"><label>📄 输出格式</label><select id="fFormat">
+                                    <option value="jpeg" selected>JPEG</option>
+                                    <option value="png">PNG</option>
+                                    <option value="pdf">PDF</option>
+                                    <option value="tiff">TIFF</option>
+                                </select></div>
+                        </div>
+                        <div style="display:flex; gap: 24px; margin: 16px 0 12px 0;">
+                            <div class="toggle-switch"><span class="toggle-label" id="duplexLabel">单面模式</span>
+                                <div class="switch-ui" id="duplexSwitch"></div><input type="checkbox" id="fDuplex"
+                                    style="display:none;">
+                            </div>
+                            <div class="toggle-switch"><span class="toggle-label" id="doubleFeedLabel">双张检测关</span>
+                                <div class="switch-ui" id="doubleFeedSwitch"></div><input type="checkbox"
+                                    id="fDoubleFeed" style="display:none;">
+                            </div>
+                        </div>
+                        <div><label>✨ 图像增强</label>
+                            <div class="checkbox-cluster">
+                                <label class="checkbox-item"><input type="checkbox" id="fDeskew">
+                                    <span>纠偏</span></label>
+                                <label class="checkbox-item"><input type="checkbox" id="fBorder">
+                                    <span>裁边</span></label>
+                                <label class="checkbox-item"><input type="checkbox" id="fRotate">
+                                    <span>旋转校正</span></label>
+                                <label class="checkbox-item"><input type="checkbox" id="fBlank">
+                                    <span>去空白页</span></label>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" id="btnStartScan" style="width:100%; margin-top: 20px;">▶
+                            启动扫描任务</button>
+                    </div>
+                </div>
+
+                <!-- 任务操作卡片 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>🎮 任务管理中心</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: flex; gap: 12px; margin-bottom: 16px;"><input type="text" id="fOpTaskId"
+                                placeholder="任务 ID" class="field" style="flex:1"></div>
+                        <div style="display: flex; gap: 10px; flex-wrap:wrap;">
+                            <button class="btn btn-sm" id="btnTaskStatus">📋 查询状态</button>
+                            <button class="btn btn-sm" id="btnTaskStop">⏹️ 停止扫描</button>
+                            <button class="btn btn-sm" id="btnTaskList">📑 任务列表</button>
+                            <button class="btn btn-sm" id="btnHealth">❤️ 健康检查</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧区域：日志 + 图片 -->
+            <div class="right-panel">
+                <!-- 可收起日志 -->
+                <div class="log-container">
+                    <div class="log-header-bar" id="logHeader">
+                        <span>📡 实时消息日志 (STOMP)</span>
+                        <div class="log-actions">
+                            <button class="log-clear-btn" id="logClearBtn">清空</button>
+                            <span class="toggle-icon" id="logToggleIcon">▲</span>
+                        </div>
+                    </div>
+                    <div id="logBox" class="log-content"></div>
+                </div>
+                <!-- 图片画廊 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>🖼️ 扫描图像预览</h3><span id="pageCount" style="font-size:12px;">0 张</span>
+                    </div>
+                    <div class="card-body" style="padding-top: 8px;">
+                        <div id="imageArea" class="image-gallery">
+                            <div style="color:#aaa; text-align:center; grid-column:1/-1;">暂无图片，启动任务后将自动展示</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 大图预览 Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <span class="lightbox-close" id="lightboxClose">✕</span>
+        <span class="lightbox-nav lightbox-prev" id="lightboxPrev">‹</span>
+        <img id="lightboxImg" src="" alt="预览大图">
+        <span class="lightbox-nav lightbox-next" id="lightboxNext">›</span>
+    </div>
+
+    <script>
+        // ---------- 核心逻辑 (与原功能一致) ----------
+        let stomp = null;
+        let connected = false;
+        const taskSubscriptions = {};
+        const $ = id => document.getElementById(id);
+        const logBox = $('logBox');
+        const imageArea = $('imageArea');
+        const pageCountSpan = $('pageCount');
+        const progressSpan = document.createElement('span');
+        progressSpan.id = 'progressPercent';
+        progressSpan.style.cssText = 'font-size:12px;color:#52c41a;margin-left:8px;display:none;';
+        pageCountSpan.parentNode.appendChild(progressSpan);
+
+        // 日志折叠
+        let logCollapsed = false;
+        const logHeader = document.getElementById('logHeader');
+        const logToggleIcon = document.getElementById('logToggleIcon');
+        logHeader.addEventListener('click', (e) => {
+            if (e.target.closest('.log-clear-btn')) return; // 清空按钮不触发展开/折叠
+            logCollapsed = !logCollapsed;
+            if (logCollapsed) {
+                logBox.classList.add('collapsed');
+                logToggleIcon.innerText = '▼';
+            } else {
+                logBox.classList.remove('collapsed');
+                logToggleIcon.innerText = '▲';
+            }
+        });
+
+        // 清空日志
+        document.getElementById('logClearBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            logBox.innerHTML = '';
+        });
+
+        function log(type, msg) {
+            if (logBox.classList.contains('collapsed') && type !== 'err') { } // 依然记录但只显示已存，但为了用户体验，即使折叠依然追加内容，但滚动不干涉
+            const now = new Date();
+            const timeStr = `${now.toLocaleTimeString('zh-CN', { hour12: false })}.${String(now.getMilliseconds()).padStart(3, '0')}`;
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            entry.innerHTML = `<span class="log-time">[${timeStr}]</span><span class="log-text">${escapeHtml(msg)}</span>`;
+            logBox.appendChild(entry);
+            if (!logCollapsed) logBox.scrollTop = logBox.scrollHeight;
+        }
+        function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function (m) { return m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'; }); }
+        function setConnectedState(state) {
+            connected = state;
+            $('btnConnect').disabled = state;
+            $('btnDisconnect').disabled = !state;
+            const statusSpan = $('connStatus');
+            const dot = $('statusDot');
+            statusSpan.innerText = state ? '已连接' : '未连接';
+            dot.className = `status-dot ${state ? 'on' : ''}`;
+        }
+        const galleryItems = []; // { key, taskId, page, imgUrl }
+        function addImage(taskId, page, imgUrl) {
+            const key = `${taskId}-${page}`;
+            if (document.querySelector(`.gallery-item[data-key="${key}"]`)) return;
+            // 移除占位文字（首次添加图片时）
+            const placeholder = imageArea.querySelector('div:first-child');
+            if (placeholder && !placeholder.classList.contains('gallery-item')) {
+                placeholder.remove();
+            }
+            galleryItems.push({ key, taskId, page, imgUrl });
+            const idx = galleryItems.length - 1;
+            const div = document.createElement('div');
+            div.className = 'gallery-item';
+            div.setAttribute('data-key', key);
+            div.innerHTML = `<div class="page-badge">📄 #${page}</div><img src="${imgUrl}" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22100%22%20height%3D%22100%22%20viewBox%3D%220%200%20100%20100%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%23f0f0f0%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20text-anchor%3D%22middle%22%20dy%3D%22.3em%22%20fill%3D%22%23999%22%3E加载失败%3C%2Ftext%3E%3C%2Fsvg%3E';">`;
+            div.addEventListener('click', () => openLightbox(idx));
+            imageArea.appendChild(div);
+            const total = document.querySelectorAll('.gallery-item').length;
+            pageCountSpan.innerText = `${total} 张`;
+        }
+
+        /* ---- Lightbox 大图预览 ---- */
+        const lightbox = $('lightbox');
+        const lightboxImg = $('lightboxImg');
+        const lightboxClose = $('lightboxClose');
+        const lightboxPrev = $('lightboxPrev');
+        const lightboxNext = $('lightboxNext');
+        let lightboxIndex = -1;
+
+        function openLightbox(idx) {
+            if (idx < 0 || idx >= galleryItems.length) return;
+            lightboxIndex = idx;
+            lightboxImg.src = galleryItems[idx].imgUrl;
+            lightboxImg.alt = `#${galleryItems[idx].page}`;
+            lightbox.classList.add('active');
+            updateLightboxNav();
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            lightboxImg.src = '';
+        }
+
+        function updateLightboxNav() {
+            lightboxPrev.style.display = lightboxIndex > 0 ? '' : 'none';
+            lightboxNext.style.display = lightboxIndex < galleryItems.length - 1 ? '' : 'none';
+        }
+
+        function lightboxPrevImage() {
+            if (lightboxIndex > 0) openLightbox(lightboxIndex - 1);
+        }
+
+        function lightboxNextImage() {
+            if (lightboxIndex < galleryItems.length - 1) openLightbox(lightboxIndex + 1);
+        }
+
+        // 点击遮罩关闭
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) closeLightbox();
+        });
+        lightboxClose.addEventListener('click', closeLightbox);
+        lightboxPrev.addEventListener('click', (e) => { e.stopPropagation(); lightboxPrevImage(); });
+        lightboxNext.addEventListener('click', (e) => { e.stopPropagation(); lightboxNextImage(); });
+        // 键盘导航
+        document.addEventListener('keydown', (e) => {
+            if (!lightbox.classList.contains('active')) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowLeft') lightboxPrevImage();
+            if (e.key === 'ArrowRight') lightboxNextImage();
+        });
+        function getImageUrl(taskId, page) {
+            const host = $('serverUrl').value.trim() || 'localhost:8899';
+            return `http://${host}/api/scan/files/${encodeURIComponent(taskId)}/${page}`;
+        }
+        function subscribeTask(taskId) {
+            if (!stomp || !connected) return;
+            if (taskSubscriptions[taskId]) return;
+            const sub = stomp.subscribe(`/user/queue/task/${taskId}`, (msg) => {
+                try {
+                    const body = JSON.parse(msg.body);
+                    log('recv', `任务 ${taskId}: ${JSON.stringify(body)}`);
+                    if (body.event === 'task_progress' && body.data && body.data.page !== undefined) {
+                        const url = getImageUrl(taskId, body.data.page);
+                        addImage(taskId, body.data.page, url);
+                        if (body.data.percent !== undefined) {
+                            const pct = body.data.percent.toFixed(1);
+                            log('info', `进度：${pct}% (${body.data.page}/${body.data.total_pages})`);
+                            progressSpan.style.display = '';
+                            progressSpan.innerText = `(${pct}%)`;
+                        }
+                    }
+                } catch (e) { log('err', '解析失败'); }
+            });
+            taskSubscriptions[taskId] = sub;
+            log('info', `已订阅 /user/queue/task/${taskId}`);
+        }
+        function sendCommand(dest, payload, desc) {
+            if (!stomp || !connected) { log('err', '未连接'); return false; }
+            log('send', `${dest} ${desc || ''}: ${JSON.stringify(payload)}`);
+            stomp.publish({ destination: dest, body: JSON.stringify(payload) });
+            return true;
+        }
+        function scannerStatusColor(status) {
+            const colors = { ready: '#52c41a', busy: '#1677ff', scanning: '#1677ff', warming_up: '#faad14', paper_empty: '#fa8c16', paper_jam: '#ff4d4f', cover_open: '#ff4d4f', error: '#ff4d4f', disconnected: '#d9d9d9', connected: '#52c41a' };
+            return colors[status] || '#d9d9d9';
+        }
+        function scannerStatusLabel(status) {
+            const labels = { ready: '就绪', busy: '繁忙', scanning: '扫描中', warming_up: '预热中', paper_empty: '缺纸', paper_jam: '卡纸', cover_open: '盖板打开', error: '错误', disconnected: '离线', connected: '已连接' };
+            return labels[status] || status;
+        }
+        function renderScanners(data) {
+            const scanners = data?.data?.scanners || data?.scanners;
+            if (!scanners || !scanners.length) { $('scannerDisplay').innerHTML = '<div style="color:#999;">未检测到扫描仪</div>'; return; }
+            $('scannerDisplay').innerHTML = scanners.map(s => `<div style="padding:6px 0; display:flex; gap:10px;"><span class="status-dot" style="background:${scannerStatusColor(s.status)}"></span><strong>${escapeHtml(s.alias || s.name)}</strong><span style="font-size:11px;color:#999;">${s.identifier}</span><span style="font-size:11px;color:${scannerStatusColor(s.status)};">${scannerStatusLabel(s.status)}</span></div>`).join('');
+        }
+        function populateScannerSelect(scanners) {
+            const sel = $('fScanner');
+            const currentVal = sel.value;
+            sel.innerHTML = '<option value="">默认（自动选择）</option>';
+            scanners.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s.identifier;
+                opt.textContent = `${s.identifier}(${scannerStatusLabel(s.status)})`;
+                if (s.is_busy || s.status === 'busy' || s.status === 'scanning') {
+                    opt.disabled = true;
+                    opt.textContent += ' — 繁忙';
+                }
+                if (opt.value === currentVal) opt.selected = true;
+                sel.appendChild(opt);
+            });
+        }
+        // 连接逻辑
+        function connect() {
+            let host = $('serverUrl').value.trim();
+            if (!host) host = 'localhost:8899';
+            const token = $('token').value.trim();
+            // token 作为 URL 查询参数传给 JwtHandshakeInterceptor（connectHeaders 是 STOMP 帧 header，握手拦截器读不到）
+            const wsUrl = token ? `ws://${host}/ws?Authorization=Bearer ${encodeURIComponent(token)}` : `ws://${host}/ws`;
+            stomp = new StompJs.Client({
+                brokerURL: wsUrl,
+                debug: (str) => { if (!str.includes('PING')) log('info', `[STOMP] ${str.substring(0, 120)}`); },
+                onConnect: () => {
+                    setConnectedState(true);
+                    log('info', 'STOMP 连接成功');
+                    stomp.subscribe('/user/queue/reply', (msg) => {
+                        try {
+                            const body = JSON.parse(msg.body);
+                            log('recv', `个人回复: ${JSON.stringify(body)}`);
+                            if (body.data && Array.isArray(body.data.scanners)) {
+                                renderScanners(body);
+                                populateScannerSelect(body.data.scanners);
+                            }
+                            if (body.code !== 0 && body.msg) log('err', `命令失败: ${body.msg}`);
+                        } catch (e) { }
+                    });
+                    stomp.subscribe('/topic/scanner', () => { sendCommand('/app/scanner/status', {}, '刷新扫描仪'); });
+                    sendCommand('/app/scanner/status', {}, '获取扫描仪列表');
+                },
+                onStompError: (frame) => log('err', `STOMP错误: ${frame.headers?.message}`),
+                onWebSocketClose: () => { if (connected) log('warn', '连接断开'); setConnectedState(false); stomp = null; Object.keys(taskSubscriptions).forEach(k => delete taskSubscriptions[k]); }
+            });
+            stomp.activate();
+            log('info', `连接 ${wsUrl}`);
+        }
+        function disconnect() { if (stomp) stomp.deactivate(); setConnectedState(false); log('info', '已断开'); }
+
+        // 双面/双张开关UI
+        const duplexCheck = document.getElementById('fDuplex');
+        const duplexSwitch = document.getElementById('duplexSwitch');
+        const duplexLabel = document.getElementById('duplexLabel');
+        function updateDuplexUI() { const active = duplexCheck.checked; duplexSwitch.classList.toggle('active', active); duplexLabel.innerText = active ? '双面模式' : '单面模式'; }
+        duplexSwitch.addEventListener('click', () => { duplexCheck.checked = !duplexCheck.checked; updateDuplexUI(); });
+        const doubleFeedCheck = document.getElementById('fDoubleFeed');
+        const doubleFeedSwitch = document.getElementById('doubleFeedSwitch');
+        const doubleFeedLabel = document.getElementById('doubleFeedLabel');
+        function updateDoubleFeedUI() { const active = doubleFeedCheck.checked; doubleFeedSwitch.classList.toggle('active', active); doubleFeedLabel.innerText = active ? '双张检测开' : '双张检测关'; }
+        doubleFeedSwitch.addEventListener('click', () => { doubleFeedCheck.checked = !doubleFeedCheck.checked; updateDoubleFeedUI(); });
+        updateDuplexUI(); updateDoubleFeedUI();
+
+        // 按钮绑定
+        $('btnConnect').onclick = connect;
+        $('btnDisconnect').onclick = disconnect;
+        $('btnScannerStatus').onclick = () => sendCommand('/app/scanner/status', {}, '获取扫描仪');
+        $('btnStartScan').onclick = () => {
+            const taskId = $('fTaskId').value.trim();
+            if (!taskId) { log('err', 'task_id必填'); return; }
+            const params = {
+                task_id: taskId,
+                scanner_name: $('fScanner').value.trim() || undefined, dpi: parseInt($('fDpi').value) || 200,
+                color_mode: $('fColor').value, duplex: duplexCheck.checked, enable_double_feed_detection: doubleFeedCheck.checked,
+                enable_deskew: $('fDeskew').checked, enable_border_detection: $('fBorder').checked,
+                enable_auto_rotate: $('fRotate').checked, enable_blank_page_removal: $('fBlank').checked,
+                output_format: $('fFormat').value
+            };
+            subscribeTask(taskId);
+            sendCommand('/app/scan/start', params, '启动扫描');
+        };
+        $('btnTaskStatus').onclick = () => { const tid = $('fOpTaskId').value.trim(); if (!tid) { log('err', '需输入task_id'); return; } subscribeTask(tid); sendCommand('/app/scan/status', { task_id: tid }); };
+        $('btnTaskStop').onclick = () => { const tid = $('fOpTaskId').value.trim(); if (!tid) { log('err', '需输入task_id'); return; } sendCommand('/app/scan/stop', { task_id: tid }); };
+        $('btnTaskList').onclick = () => sendCommand('/app/scan/list', {});
+        $('btnHealth').onclick = () => sendCommand('/app/scan/health', {});
+        log('info', '客户端已准备就绪，支持日志折叠/图片预览');
+    </script>
+</body>
+
+</html>
