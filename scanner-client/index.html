@@ -951,7 +951,7 @@
                     stomp.subscribe('/user/queue/reply', (msg) => {
                         try {
                             const body = JSON.parse(msg.body);
-                            log('recv', `个人回复: ${JSON.stringify(body)}`);
+                            log('recv', `服务端回复: ${JSON.stringify(body)}`);
                             if (body.data && Array.isArray(body.data.scanners)) {
                                 renderScanners(body);
                                 populateScannerSelect(body.data.scanners);
