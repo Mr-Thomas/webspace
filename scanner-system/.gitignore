@@ -1,0 +1,38 @@
+# Rust 构建输出
+tauri/src-tauri/target/
+
+# Node.js
+tauri/node_modules/
+
+# 后端运行产物
+backend/jre/
+backend/logs/
+backend/temp/
+backend/scanner-local-service.jar
+
+# 构建输出
+release/*.exe
+release/*.zip
+
+# WebView2 离线安装包（构建时自动下载）
+installer/runtime/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+Thumbs.db
+.DS_Store
+*.swp
+*.swo
+
+# Claude Code
+.claude/
+
+# Java 编译
+*.class
+
+# 日志
+*.log
