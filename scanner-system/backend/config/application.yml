@@ -1,0 +1,43 @@
+server:
+  host: 127.0.0.1
+  port: 8899
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: scanner-local-service
+  jackson:
+    default-property-inclusion: non_null
+
+scanner:
+  upload-url: ""
+  temp-dir: "${user.dir}/temp"
+  check-interval: 5
+  twain: SAFE
+  show-ui: false
+  acquire-mode: FILE  # BUFFERED（内存缓冲传输+后处理）或 FILE（驱动直出文件，零Java侧解码）
+  auto-open-browser: true  # Launch4j exe 启动器 通过 -D 开启，打开默认浏览器
+  workers:
+    "PaperStream IP fi-8165U #2":
+      alias: "理光fi-8165U高速扫描仪"
+    "Kodak i1200":
+      alias: "文档扫描仪"
+
+# SpringDoc 基础配置
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+
+  # 组配置
+  group-configs:
+    - group: ${spring.application.name}
+      paths-to-match: /**
+      packages-to-scan: com.scannerlocalservice
+
+
+

@@ -1,0 +1,22 @@
+scanner:
+  upload-url: ""
+  auth:
+    enabled: true
+
+
+# 生产环境禁用Knife4j
+knife4j:
+  enable: false
+  # 开启生产环境屏蔽
+  production: true
+
+# 同时禁用 SpringDoc 的 UI
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false
+
+logging:
+  level:
+    com.scannerlocalservice: INFO
