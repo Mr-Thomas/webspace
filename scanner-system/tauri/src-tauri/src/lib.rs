@@ -24,7 +24,7 @@ fn get_backend_dir() -> PathBuf {
 }
 
 fn start_backend(backend_dir: &PathBuf) -> Child {
-    let java = backend_dir.join("jre/bin/java.exe");
+    let java = backend_dir.join("jre/bin/javaw.exe");
     let jar = backend_dir.join("scanner-local-service.jar");
     let lib = backend_dir.join("lib");
 
@@ -32,6 +32,7 @@ fn start_backend(backend_dir: &PathBuf) -> Child {
         .args([
             "-Dfile.encoding=UTF-8",
             &format!("-Djava.library.path={}", lib.display()),
+            "-Dscanner.auto-open-browser=false",
             "-jar",
             &jar.display().to_string(),
             "--server.port=8899",
