@@ -11,7 +11,7 @@
             --primary: #1677ff;
             --primary-dark: #0958d9;
             --primary-bg: #e6f4ff;
-            --success: #52c41a;
+            --success: #237804;
             --warning: #faad14;
             --error: #ff4d4f;
             --danger: #ff4d4f;
@@ -49,15 +49,15 @@
         }
 
         input:not([type=checkbox]):not([type=radio]) {
-            min-height: 32px;
+            min-height: 36px;
         }
 
         button {
-            height: 36px;
+            height: 40px;
         }
 
         select {
-            min-height: 32px;
+            min-height: 36px;
         }
 
         /* WebView2 兼容性：flex gap 替代方案（用 margin 代替 gap 避免旧版 WebView2 gap 渲染差异） */
@@ -171,7 +171,7 @@
 
         .btn {
             padding: 8px 20px;
-            border-radius: 40px;
+            border-radius: 20px;
             font-weight: 500;
             font-size: 13px;
             border: none;
@@ -206,11 +206,8 @@
         .status-badge {
             display: inline-flex;
             align-items: center;
+            gap: 8px;
             padding: 6px 14px;
-        }
-        .status-badge > * + * {
-            margin-left: 8px;
-        }
             border-radius: 40px;
             background: #f8f9fc;
             font-size: 13px;
@@ -231,13 +228,18 @@
 
         @keyframes pulse {
             0% {
-                opacity: 0.6;
-                transform: scale(0.9);
+                opacity: 0.4;
+                transform: scale(0.8);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.3);
             }
 
             100% {
-                opacity: 1;
-                transform: scale(1.2);
+                opacity: 0.4;
+                transform: scale(0.8);
             }
         }
 
@@ -309,9 +311,9 @@
         }
 
         .field-group label {
-            font-size: 14px;
-            font-weight: 700;
-            color: #3a4b62;
+            font-size: 13px;
+            font-weight: 400;
+            color: #333;
             margin-bottom: 6px;
         }
 
@@ -319,8 +321,8 @@
         .field-group select {
             background: #ffffff;
             border: 1px solid #dee4ec;
-            border-radius: 14px;
-            padding: 6px 14px;
+            border-radius: 8px;
+            padding: 0 10px;
             font-size: 14px;
             transition: all 0.2s;
             outline: none;
@@ -354,6 +356,7 @@
             background: #f8fafd;
             padding: 6px 0;
             border-radius: 40px;
+            height: 36px;
         }
 
         .toggle-switch .toggle-label {
@@ -404,6 +407,7 @@
             display: flex;
             align-items: center;
             background: #ffffff;
+            height: 36px;
         }
         .checkbox-item input {
             margin-right: 8px;
@@ -789,7 +793,7 @@
                             </div>
                         </div>
                         <div style="margin-top:12px;">
-                            <label style="font-size:14px; font-weight:700; color:#3a4b62; display:block; margin-bottom:8px;">✨ 图像增强</label>
+                            <label style="font-size:13px; font-weight:400; color:#333; display:block; margin-bottom:8px;">✨ 图像增强</label>
                             <div style="display:flex;">
                                 <label class="checkbox-item" style="flex:1; justify-content:center; background:#f8fafd; border-radius:40px; padding:3px 14px; margin-right:10px;"><input type="checkbox" id="fDeskew">
                                     <span>纠偏</span></label>
