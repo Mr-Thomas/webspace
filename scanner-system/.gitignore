@@ -5,14 +5,10 @@ tauri/src-tauri/target/
 tauri/node_modules/
 
 # 后端运行产物
-backend/jre/
-backend/logs/
-backend/temp/
-backend/scanner-local-service.jar
+backend/
 
 # 构建输出
-release/*.exe
-release/*.zip
+release/
 
 # WebView2 离线安装包（构建时自动下载）
 installer/runtime/
