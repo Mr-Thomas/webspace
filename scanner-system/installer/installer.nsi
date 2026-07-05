@@ -37,6 +37,7 @@ Section "MainApplication" SEC_MAIN
     SectionIn RO
     SetOutPath "$INSTDIR"
     ExecWait 'taskkill /f /im scanner-client.exe' $0
+    ExecWait 'taskkill /f /im java.exe' $0
 
     ; Tauri desktop shell
     File "..\tauri\src-tauri\target\release\scanner-client.exe"

@@ -1,4 +1,4 @@
-扫描仪管理系统 Scanner Local Service
+﻿扫描仪管理系统 Scanner Local Service
 Copyright (c) 2024 Scanner Local Service
 
 本软件遵循 MIT 许可证。
