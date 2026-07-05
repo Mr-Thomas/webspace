@@ -67,6 +67,13 @@ fn wait_for_backend() {
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_single_instance::init(|app, _argv, _cwd| {
+            // 已有实例运行时，显示已有窗口而不是打开新实例
+            if let Some(window) = app.get_webview_window("main") {
+                let _ = window.show();
+                let _ = window.set_focus();
+            }
+        }))
         .setup(|app| {
             let backend_dir = get_backend_dir();
             let child = start_backend(&backend_dir);
@@ -129,6 +136,13 @@ pub fn run() {
                     }
                 })
                 .build(app)?;
+
+            // 显式设置窗口图标，确保任务栏图标与托盘图标一致
+            if let Some(window) = app.get_webview_window("main") {
+                if let Some(icon) = app.default_window_icon() {
+                    let _ = window.set_icon(icon.clone());
+                }
+            }
 
             Ok(())
         })
