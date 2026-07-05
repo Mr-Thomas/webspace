@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Scanner WS 专业客户端 | 扫描管理平台</title>
-    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+    <script src="stomp.umd.min.js"></script>
     <style>
         :root {
             --primary: #1677ff;
@@ -33,11 +33,54 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
             background: var(--bg-page);
             color: var(--text);
             font-size: 14px;
-            line-height: 1.5;
+            line-height: 1.4;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* WebView2 兼容性：统一表单元素高度和字体 */
+        input, select, button, textarea {
+            font-family: inherit;
+            font-size: inherit;
+            line-height: 1.4;
+        }
+
+        input:not([type=checkbox]):not([type=radio]) {
+            min-height: 32px;
+        }
+
+        button {
+            height: 36px;
+        }
+
+        select {
+            min-height: 32px;
+        }
+
+        /* WebView2 兼容性：flex gap 替代方案（用 margin 代替 gap 避免旧版 WebView2 gap 渲染差异） */
+        .flex-row {
+            display: flex;
+            flex-wrap: nowrap;
+        }
+        .flex-row > * + * {
+            margin-left: 12px;
+        }
+
+        .flex-row-gap24 {
+            display: flex;
+            flex-wrap: nowrap;
+        }
+        .flex-row-gap24 > * + * {
+            margin-left: 24px;
+        }
+
+        .flex-center {
+            display: flex;
+            align-items: center;
+            flex-wrap: nowrap;
         }
 
         .container {
@@ -56,15 +99,23 @@
             display: flex;
             align-items: center;
             flex-wrap: wrap;
-            gap: 16px;
             border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        .connection-bar > * {
+            margin: 2px 0;
+        }
+        .connection-bar > * + * {
+            margin-left: 16px;
         }
 
         .logo-area {
             display: flex;
             align-items: center;
-            gap: 10px;
             margin-right: 8px;
+        }
+        .logo-area > * + * {
+            margin-left: 10px;
         }
 
         .logo-icon {
@@ -155,8 +206,11 @@
         .status-badge {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
             padding: 6px 14px;
+        }
+        .status-badge > * + * {
+            margin-left: 8px;
+        }
             border-radius: 40px;
             background: #f8f9fc;
             font-size: 13px;
@@ -228,7 +282,9 @@
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 8px;
+        }
+        .card-header h3 > * + * {
+            margin-left: 8px;
         }
 
         .card-body {
@@ -249,13 +305,14 @@
         .field-group {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            min-width: 0;
         }
 
         .field-group label {
-            font-size: 13px;
-            font-weight: 500;
+            font-size: 14px;
+            font-weight: 700;
             color: #3a4b62;
+            margin-bottom: 6px;
         }
 
         .field-group input,
@@ -263,7 +320,7 @@
             background: #ffffff;
             border: 1px solid #dee4ec;
             border-radius: 14px;
-            padding: 10px 14px;
+            padding: 6px 14px;
             font-size: 14px;
             transition: all 0.2s;
             outline: none;
@@ -294,10 +351,13 @@
         .toggle-switch {
             display: flex;
             align-items: center;
-            gap: 14px;
             background: #f8fafd;
             padding: 6px 0;
             border-radius: 40px;
+        }
+
+        .toggle-switch .toggle-label {
+            margin-right: 14px;
         }
 
         .switch-ui {
@@ -333,15 +393,21 @@
         .checkbox-cluster {
             display: flex;
             flex-wrap: wrap;
-            gap: 18px;
             margin-top: 4px;
+        }
+
+        .checkbox-cluster .checkbox-item + .checkbox-item {
+            margin-left: 18px;
         }
 
         .checkbox-item {
             display: flex;
             align-items: center;
-            gap: 8px;
             background: #ffffff;
+        }
+        .checkbox-item input {
+            margin-right: 8px;
+        }
             padding: 6px 14px 6px 10px;
             border-radius: 40px;
             border: 1px solid #e2e8f2;
@@ -396,12 +462,15 @@
         .log-header-bar .log-actions {
             display: flex;
             align-items: center;
-            gap: 8px;
+        }
+        .log-header-bar .log-actions > * + * {
+            margin-left: 8px;
         }
 
         .log-clear-btn {
             background: none;
             border: 1px solid #4a5a7a;
+            height: auto;
             color: #8aa0c0;
             font-size: 11px;
             padding: 2px 10px;
@@ -436,8 +505,9 @@
             padding: 6px 10px;
             border-bottom: 1px solid #1e2432;
             display: flex;
-            gap: 12px;
-            font-family: monospace;
+        }
+        .log-entry > * + * {
+            margin-left: 12px;
         }
 
         .log-time {
@@ -632,9 +702,12 @@
             margin-top: 20px;
             display: flex;
             justify-content: flex-end;
-            gap: 12px;
             border-top: 1px solid #ecf3fa;
             padding-top: 20px;
+        }
+        .action-bar > * + * {
+            margin-left: 12px;
+        }
         }
     </style>
 </head>
@@ -687,16 +760,16 @@
                                     <option value="">默认（自动选择）</option>
                                 </select></div>
                         </div>
-                        <div style="display:flex; gap: 24px; margin: 16px 0 12px 0;">
-                            <div class="field-group" style="flex:1;"><label><span>📐</span> DPI 分辨率</label><input
+                        <div class="flex-row-gap24" style="margin: 16px 0 12px 0;">
+                            <div class="field-group" style="flex:1; min-width:0;"><label><span>📐</span> DPI 分辨率</label><input
                                     type="number" id="fDpi" value="200"></div>
-                            <div class="field-group" style="flex:1;"><label><span>🎨</span> 色彩模式</label><select
+                            <div class="field-group" style="flex:1; min-width:0;"><label><span>🎨</span> 色彩模式</label><select
                                     id="fColor">
                                     <option value="bw" selected>⚫ 黑白</option>
                                     <option value="gray">🌓 灰度</option>
                                     <option value="rgb">🌈 彩色</option>
                                 </select></div>
-                            <div class="field-group" style="flex:1;"><label>📄 输出格式<span id="formatBadge"
+                            <div class="field-group" style="flex:1; min-width:0;"><label>📄 输出格式<span id="formatBadge"
                                         class="format-badge" title="BUFFERED 模式下仅支持 JPEG 输出"
                                         style="display:none;">ⓘ</span></label><select id="fFormat">
                                     <option value="jpeg" selected>JPEG</option>
@@ -705,7 +778,7 @@
                                     <option value="tiff">TIFF</option>
                                 </select></div>
                         </div>
-                        <div style="display:flex; gap: 24px; margin: 16px 0 12px 0;">
+                        <div class="flex-row-gap24" style="margin: 16px 0 12px 0;">
                             <div class="toggle-switch"><span class="toggle-label" id="duplexLabel">单面模式</span>
                                 <div class="switch-ui" id="duplexSwitch"></div>
                                 <input type="checkbox" id="fDuplex" style="display:none;">
@@ -715,15 +788,16 @@
                                 <input type="checkbox" id="fDoubleFeed" style="display:none;">
                             </div>
                         </div>
-                        <div><label>✨ 图像增强</label>
-                            <div class="checkbox-cluster">
-                                <label class="checkbox-item"><input type="checkbox" id="fDeskew">
+                        <div style="margin-top:12px;">
+                            <label style="font-size:14px; font-weight:700; color:#3a4b62; display:block; margin-bottom:8px;">✨ 图像增强</label>
+                            <div style="display:flex;">
+                                <label class="checkbox-item" style="flex:1; justify-content:center; background:#f8fafd; border-radius:40px; padding:3px 14px; margin-right:10px;"><input type="checkbox" id="fDeskew">
                                     <span>纠偏</span></label>
-                                <label class="checkbox-item"><input type="checkbox" id="fBorder">
+                                <label class="checkbox-item" style="flex:1; justify-content:center; background:#f8fafd; border-radius:40px; padding:3px 14px; margin-right:10px;"><input type="checkbox" id="fBorder">
                                     <span>裁边</span></label>
-                                <label class="checkbox-item"><input type="checkbox" id="fRotate">
+                                <label class="checkbox-item" style="flex:1; justify-content:center; background:#f8fafd; border-radius:40px; padding:3px 14px; margin-right:10px;"><input type="checkbox" id="fRotate">
                                     <span>旋转校正</span></label>
-                                <label class="checkbox-item"><input type="checkbox" id="fBlank">
+                                <label class="checkbox-item" style="flex:1; justify-content:center; background:#f8fafd; border-radius:40px; padding:3px 14px;"><input type="checkbox" id="fBlank">
                                     <span>去空白页</span></label>
                             </div>
                         </div>
@@ -739,14 +813,14 @@
                         <h3>🎮 任务管理中心</h3>
                     </div>
                     <div class="card-body">
-                        <div style="display: flex; gap: 12px; margin-bottom: 16px;"><input type="text" id="fOpTaskId"
-                                placeholder="任务 ID" class="field" style="flex:1">
+                        <div style="display: flex; margin-bottom: 16px;"><input type="text" id="fOpTaskId"
+                                placeholder="任务 ID" class="field" style="flex:1; margin-right:12px;">
                         </div>
-                        <div style="display: flex; gap: 10px; flex-wrap:wrap;">
-                            <button class="btn btn-sm" id="btnTaskStatus">📋 查询状态</button>
-                            <button class="btn btn-sm" id="btnTaskStop">⏹️ 停止扫描</button>
-                            <button class="btn btn-sm" id="btnTaskList">📑 任务列表</button>
-                            <button class="btn btn-sm" id="btnHealth">❤️ 健康检查</button>
+                        <div style="display: flex; flex-wrap:wrap;">
+                            <button class="btn btn-sm" id="btnTaskStatus" style="margin-right:10px; margin-bottom:4px;">📋 查询状态</button>
+                            <button class="btn btn-sm" id="btnTaskStop" style="margin-right:10px; margin-bottom:4px;">⏹️ 停止扫描</button>
+                            <button class="btn btn-sm" id="btnTaskList" style="margin-right:10px; margin-bottom:4px;">📑 任务列表</button>
+                            <button class="btn btn-sm" id="btnHealth" style="margin-right:10px; margin-bottom:4px;">❤️ 健康检查</button>
                             <button class="btn btn-sm" id="btnHistory"
                                 style="background:#f0f5ff;color:#1677ff;border:1px solid #adc6ff;">📁 历史文件
                             </button>
@@ -775,9 +849,9 @@
                 <div class="card">
                     <div class="card-header" id="galleryHeader" style="cursor:pointer;user-select:none;">
                         <h3>🖼️ 扫描图像预览</h3>
-                        <div style="display:flex;align-items:center;gap:8px;">
+                        <div style="display:flex;align-items:center;">
                             <span id="pageCount" style="font-size:12px;">0 张</span>
-                            <span class="gallery-toggle-icon" id="galleryToggleIcon">▼</span>
+                            <span class="gallery-toggle-icon" id="galleryToggleIcon" style="margin-left:8px;">▼</span>
                         </div>
                     </div>
                     <div id="galleryBody" class="card-body gallery-card-body" style="padding-top: 8px;">
@@ -808,11 +882,11 @@
             style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:680px; max-width:92%; max-height:86%; background:#fff; border-radius:16px; overflow:hidden; display:flex; flex-direction:column; cursor:default;">
             <div
                 style="padding:18px 24px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
-                <h3 style="font-size:17px; display:flex; align-items:center; gap:8px;" id="historyModalTitle">📁
+                <h3 style="font-size:17px; display:flex; align-items:center;" id="historyModalTitle">📁
                     历史文件</h3>
-                <div style="display:flex; gap:8px;">
+                <div style="display:flex;">
                     <button class="btn btn-sm" id="historyBackBtn" style="display:none; padding:4px 12px;">← 返回</button>
-                    <button class="btn btn-sm" id="historyRefreshBtn" style="padding:4px 12px;">🔄 刷新</button>
+                    <button class="btn btn-sm" id="historyRefreshBtn" style="padding:4px 12px; margin-left:8px;">🔄 刷新</button>
                 </div>
             </div>
             <div id="historyContent"
