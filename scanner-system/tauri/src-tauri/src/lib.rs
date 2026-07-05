@@ -3,6 +3,8 @@ use std::net::TcpStream;
 use std::path::PathBuf;
 use std::process::{Child, Command};
 use std::sync::Mutex;
+use tauri::menu::{MenuBuilder, MenuItemBuilder};
+use tauri::tray::TrayIconBuilder;
 use tauri::{Emitter, Manager};
 
 struct BackendProcess {
@@ -78,18 +80,76 @@ pub fn run() {
                 let _ = app_handle.emit("backend-ready", ());
             });
 
+            // 创建系统托盘
+            let show_item = MenuItemBuilder::with_id("show", "显示窗口").build(app)?;
+            let quit_item = MenuItemBuilder::with_id("quit", "退出").build(app)?;
+            let menu = MenuBuilder::new(app)
+                .item(&show_item)
+                .item(&quit_item)
+                .build()?;
+
+            let _tray = TrayIconBuilder::new()
+                .icon(app.default_window_icon().unwrap().clone())
+                .tooltip("扫描仪管理")
+                .menu(&menu)
+                .on_tray_icon_event(|tray, event| {
+                    use tauri::tray::TrayIconEvent;
+                    if let TrayIconEvent::Click {
+                        button: tauri::tray::MouseButton::Left,
+                        ..
+                    } = event
+                    {
+                        if let Some(window) = tray.app_handle().get_webview_window("main") {
+                            let _ = window.show();
+                            let _ = window.set_focus();
+                        }
+                    }
+                })
+                .on_menu_event(|app, event| {
+                    match event.id().as_ref() {
+                        "show" => {
+                            if let Some(window) = app.get_webview_window("main") {
+                                let _ = window.show();
+                                let _ = window.set_focus();
+                            }
+                        }
+                        "quit" => {
+                            // 杀死后端进程后退出
+                            if let Some(state) = app.try_state::<BackendProcess>() {
+                                if let Ok(mut guard) = state.child.lock() {
+                                    if let Some(mut child) = guard.take() {
+                                        let _ = child.kill();
+                                        let _ = child.wait();
+                                    }
+                                }
+                            }
+                            app.exit(0);
+                        }
+                        _ => {}
+                    }
+                })
+                .build(app)?;
+
             Ok(())
         })
         .on_window_event(|window, event| {
-            if let tauri::WindowEvent::Destroyed = event {
-                if let Some(state) = window.app_handle().try_state::<BackendProcess>() {
-                    if let Ok(mut guard) = state.child.lock() {
-                        if let Some(mut child) = guard.take() {
-                            let _ = child.kill();
-                            let _ = child.wait();
+            match event {
+                tauri::WindowEvent::CloseRequested { api, .. } => {
+                    // 关闭窗口时隐藏到系统托盘，不退出
+                    let _ = window.hide();
+                    api.prevent_close();
+                }
+                tauri::WindowEvent::Destroyed => {
+                    if let Some(state) = window.app_handle().try_state::<BackendProcess>() {
+                        if let Ok(mut guard) = state.child.lock() {
+                            if let Some(mut child) = guard.take() {
+                                let _ = child.kill();
+                                let _ = child.wait();
+                            }
                         }
                     }
                 }
+                _ => {}
             }
         })
         .run(tauri::generate_context!())
