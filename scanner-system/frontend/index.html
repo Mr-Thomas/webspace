@@ -1699,13 +1699,13 @@
                             if (placeholder && !placeholder.classList.contains('gallery-item')) {
                                 placeholder.remove();
                             }
-                            galleryItems.push({ key, taskId: 'history', page: f.file_name, imgUrl: f.preview_url });
+                            galleryItems.push({ key, taskId: 'history', page: f.file_name, imgUrl: getApiBase() + f.preview_url });
                             const gi = galleryItems.length - 1;
                             if (f.file_name === clickName) clickIndex = gi;
                             const div = document.createElement('div');
                             div.className = 'gallery-item';
                             div.setAttribute('data-key', key);
-                            div.innerHTML = `<div class="page-badge">📁 ${escapeHtml(f.file_name)}</div><img src="${f.preview_url}" loading="lazy" onerror="this.src='${svgFallback}';">`;
+                            div.innerHTML = `<div class="page-badge">📁 ${escapeHtml(f.file_name)}</div><img src="${getApiBase() + f.preview_url}" loading="lazy" onerror="this.src='${svgFallback}';">`;
                             div.addEventListener('click', () => openLightbox(gi));
                             imageArea.appendChild(div);
                         });
